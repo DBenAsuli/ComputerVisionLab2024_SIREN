@@ -32,10 +32,8 @@ class MLP(nn.Module):
     def forward(self, x):
         return self.net(x)
 
-
-# Neural network for SIREN implicit representation
 class SIREN(nn.Module):
-    def __init__(self, input_dim=2, hidden_dim=526, output_dim=3, num_layers=10, w0=30):
+    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=10, w0=30):
         super(SIREN, self).__init__()
         layers = []
 
@@ -46,10 +44,22 @@ class SIREN(nn.Module):
 
         self.net = nn.Sequential(*layers)
 
-    def forward(self, x):
+        # Initialization
         for layer in self.net:
-            x = layer(x)
-        return x
+            if isinstance(layer, nn.Linear):
+                nn.init.uniform_(layer.weight, -1 / input_dim, 1 / input_dim)
+                nn.init.zeros_(layer.bias)
+
+    def forward(self, x):
+        return self.net(x)
+
+class Sine(nn.Module):
+    def __init__(self, w0=30):
+        super(Sine, self).__init__()
+        self.w0 = w0
+
+    def forward(self, x):
+        return torch.sin(self.w0 * x)
 
 
 # Neural network for SIREN  representation with ... FIXME

@@ -19,7 +19,7 @@ if __name__ == "__main__":
     num_of_epochs = 1000
 
     print("Reconstructing Images via MLP:")
-    test_reconstruct_folder("MLP", folder_path, num_of_epochs=num_of_epochs)
+ #   test_reconstruct_folder("MLP", folder_path, num_of_epochs=num_of_epochs)
     print("")
 
     print("Reconstructing Images via SIREN:")

@@ -125,7 +125,7 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
         model = MLP().to(device)
         model_chosen = 1
     elif model_name.upper() == "SIREN":
-        model = SIREN().to(device)
+        model = SIREN(input_dim=2, output_dim=3)
         model_chosen = 1
     else:
         print("Invalid model name")
