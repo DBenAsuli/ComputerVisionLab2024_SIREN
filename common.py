@@ -84,15 +84,13 @@ def infer(model, image):
     x, y, im_mean, im_std = create_coordinate_grid(image)
 
     with torch.no_grad():
-        # generate image and reverse the standardization recon=net(x)*std + mean
-        recon = (model.net(x) * im_std[None] + im_mean[None]).reshape(image.shape).numpy().clip(0, 1)
+        output = (model.net(x) * im_std[None] + im_mean[None]).reshape(image.shape).numpy().clip(0, 1)
 
-    return recon
+    return output
 
 
 def resize_image(image, target_size):
     return cv2.resize(image, target_size, interpolation=cv2.INTER_AREA)
-
 
 def compare_images(image_path1, image_path2):
     # Load the images
@@ -122,7 +120,6 @@ def compare_images(image_path1, image_path2):
 def reconstruct_img(file_path, model_name, num_of_epochs):
     image = load_image(file_path)
     image_name = file_path.split(".")[1].split("/")[2]
-    H, W, C = image.shape
 
     if model_name.upper() == "MLP":
         model = MLP().to(device)
