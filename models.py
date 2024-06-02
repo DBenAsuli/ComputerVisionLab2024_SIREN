@@ -32,8 +32,9 @@ class MLP(nn.Module):
     def forward(self, x):
         return self.net(x)
 
+
 class SIREN(nn.Module):
-    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=10, w0=30):
+    def __init__(self, input_dim=2, hidden_dim=526, output_dim=3, num_layers=10, w0=30):
         super(SIREN, self).__init__()
         layers = []
 
@@ -52,6 +53,7 @@ class SIREN(nn.Module):
 
     def forward(self, x):
         return self.net(x)
+
 
 class Sine(nn.Module):
     def __init__(self, w0=30):

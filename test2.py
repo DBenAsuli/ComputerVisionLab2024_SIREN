@@ -8,7 +8,7 @@ from common import *
 # For Memory Optimization
 gc.collect()
 warnings.filterwarnings("ignore")
-warnings.filterwarnings("ignore", category=UserWarning, message="A NumPy version.*")
+warnings.filterwarnings("ignore", category=Warning, message="A NumPy version.*")
 
 # Set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -19,7 +19,7 @@ if __name__ == "__main__":
     folder_path = './Images/'
     num_of_epochs = 1000
 
-    print("Reconstructing Images via SIREN:2")
+    print("Reconstructing Images via SIREN2:")
     test_reconstruct_folder("SIREN", folder_path, num_of_epochs=num_of_epochs)
     print("")
 

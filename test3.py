@@ -8,7 +8,7 @@ from common import *
 # For Memory Optimization
 gc.collect()
 warnings.filterwarnings("ignore")
-warnings.filterwarnings("ignore", category=UserWarning, message="A NumPy version.*")
+warnings.filterwarnings("ignore", category=Warning, message="A NumPy version.*")
 
 # Set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

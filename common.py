@@ -6,6 +6,7 @@ import gc
 import os
 import cv2
 import torch
+import warnings
 import numpy as np
 from models import *
 from tqdm import tqdm
@@ -14,11 +15,7 @@ from PIL import Image
 import torch.optim as optim
 from torch.optim import Adam
 import matplotlib.pyplot as plt
-from skimage.transform import rescale
 from skimage.metrics import structural_similarity as ssim
-
-# For Memory Optimization
-gc.collect()
 
 # Set device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -29,7 +26,7 @@ def load_image(image_path):
     image = plt.imread(image_path) / 255.
     scale = 120 / max(image.shape[:-1])
     scale = 0.05
-    image = rescale(image, scale, channel_axis=-1)
+    #    image = rescale(image, scale, channel_axis=-1)
 
     return image
 
@@ -56,7 +53,7 @@ def create_coordinate_grid(im):
 
 
 # Training function for both networks
-def train(image, model, epochs=1000, lr=1e-3):
+def train(image, model, epochs=1000, lr=1e-3, img_name="", model_name=""):
     x, y, im_mean, im_std = create_coordinate_grid(image)
 
     x = torch.FloatTensor(x).to(device)
@@ -64,7 +61,7 @@ def train(image, model, epochs=1000, lr=1e-3):
 
     optimizer = optim.Adam(model.parameters(), lr=lr)
     epochs_bar = tqdm(range(epochs))
-
+    train_loss = []
     for epoch in epochs_bar:
         model.train()
         optimizer.zero_grad()
@@ -72,10 +69,11 @@ def train(image, model, epochs=1000, lr=1e-3):
         loss = torch.mean((y - output) ** 2)
         loss.backward()
         optimizer.step()
-
+        train_loss.append(loss.item())
         if (epoch + 1) % 100 == 0:
             print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.4f}')
 
+    plot_train_graph(train_loss=train_loss, img_name=img_name, model_name=model_name)
     return model
 
 
@@ -91,6 +89,7 @@ def infer(model, image):
 
 def resize_image(image, target_size):
     return cv2.resize(image, target_size, interpolation=cv2.INTER_AREA)
+
 
 def compare_images(image_path1, image_path2):
     # Load the images
@@ -134,7 +133,7 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
     if model_chosen:
         print("")
         print("Working on: \"" + image_name + "\" image")
-        model = train(image, model, epochs=num_of_epochs, lr=1e-3)
+        model = train(image, model, epochs=num_of_epochs, lr=1e-3, img_name=image_name, model_name=model_name.upper())
         reconstructed_image = infer(model, image)
         reconstructed_image_path = "".join(('./Results/', model_name, '/', image_name, '.png'))
         save_image(reconstructed_image, reconstructed_image_path)
@@ -143,6 +142,7 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
 def iterate_reconstruct_folder(folder_path, model_type, num_of_epochs):
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
+        img_name = file_path.split(".")[0]
         file_suffix = file_path.split(".")[-1]
         if os.path.isfile(file_path):
             if file_suffix.upper() == "JPG":
@@ -168,8 +168,20 @@ def iterate_compare_folder(folder_path1='./Images/', folder_path2="."):
                         print("")
 
 
+def plot_train_graph(train_loss, img_name="", model_name=""):
+    plt.plot(train_loss, label="Train Loss")
+    plt.title(f'Train and Validation Loss of {img_name} with {model_name} Model')
+    plt.xlabel("Epoch Number")
+    plt.ylabel("Loss")
+    plt.legend(loc="upper right")
+    graph_image_path = "".join(('./Results/', model_name, '/Graphs/', f'Train_Loss_{img_name}_{model_name}.png'))
+    plt.savefig(graph_image_path)
+    plt.clf()
+
+
 def test_reconstruct_folder(model_type, folder_path, num_of_epochs):
     iterate_reconstruct_folder(folder_path, model_type.upper(), num_of_epochs)
+
 
 def test_compare_folder(folder_path1, folder_path2):
     iterate_compare_folder(folder_path1, folder_path2)
