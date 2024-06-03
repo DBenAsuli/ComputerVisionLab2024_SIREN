@@ -17,10 +17,10 @@ if __name__ == "__main__":
     folder_path = './Images/'
     num_of_epochs = 1000
 
-    print("Reconstructing Images via MLP_SINE")
-    test_reconstruct_folder("MLP_SINE", folder_path, num_of_epochs=num_of_epochs)
+    print("Reconstructing Images via MLP_SINE2")
+    test_reconstruct_folder("MLP_SINE2", folder_path, num_of_epochs=num_of_epochs)
     print("")
 
-    print("Comparing Reconstructions of MLP_SINE:")
-    test_compare_folder(folder_path, './Results/MLP_SINE/')
+    print("Comparing Reconstructions of MLP_SINE2:")
+    test_compare_folder(folder_path, './Results/MLP_SINE2/')
     print("")

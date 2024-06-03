@@ -12,7 +12,7 @@ from common import *
 gc.collect()
 
 # Set device
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cpu')
 
 # Main
 if __name__ == "__main__":
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     if model_chosen:
         model = train(image, model, epochs=1000, lr=1e-3)
 
-        reconstructed_image = infer_MLP(model, image)
+        reconstructed_image = infer(model, image)
         reconstructed_image_path = "".join(('./Results/', image_name, '_Reconstructed_', model_name.upper(), '.png'))
         save_image(reconstructed_image, reconstructed_image_path)
 

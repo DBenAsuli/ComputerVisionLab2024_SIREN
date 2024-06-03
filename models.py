@@ -33,8 +33,9 @@ class Sine(nn.Module):
     def forward(self, x):
         return torch.sin(self.w0 * x)
 
+
 class SIREN(nn.Module):
-    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=10, w0=30.0):
+    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=5, w0=30.0):
         super(SIREN, self).__init__()
         self.w0 = w0
 
@@ -55,7 +56,8 @@ class SIREN(nn.Module):
 
             for layer in self.net:
                 if isinstance(layer, nn.Linear):
-                    nn.init.uniform_(layer.weight, -np.sqrt(6 / layer.in_features) / self.w0, np.sqrt(6 / layer.in_features) / self.w0)
+                    nn.init.uniform_(layer.weight, -np.sqrt(6 / layer.in_features) / self.w0,
+                                     np.sqrt(6 / layer.in_features) / self.w0)
                     nn.init.zeros_(layer.bias)
 
     def forward(self, x):
@@ -64,7 +66,7 @@ class SIREN(nn.Module):
 
 # Neural network for SIREN representation with alternating Sine and ReLU layers
 class SIREN_HYBRID(SIREN):
-    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=10, w0=30.0):
+    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=5, w0=30.0):
         super(SIREN, self).__init__()
         self.w0 = w0
 
@@ -81,13 +83,28 @@ class SIREN_HYBRID(SIREN):
 
 # Neural network for MLP implicit representation with one Sine Layer
 class MLP_SINE(MLP):
-    def __init__(self, input_dim=2, hidden_dim=526, output_dim=3, num_layers=10, w0=30):
+    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=10, w0=30):
         super(MLP_SINE, self).__init__()
         layers = []
 
         for i in range(num_layers):
             layers.append(nn.Linear(input_dim if i == 0 else hidden_dim, hidden_dim))
             layers.append(Sine(w0) if i == 0 else nn.ReLU(inplace=True))
+
+        layers.append(nn.Linear(hidden_dim, output_dim))
+
+        self.net = nn.Sequential(*layers)
+
+
+# Neural network for MLP implicit representation with one Sine Layer
+class MLP_SINE2(MLP):
+    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=5, w0=30):
+        super(MLP_SINE2, self).__init__()
+        layers = []
+
+        for i in range(num_layers):
+            layers.append(nn.Linear(input_dim if i == 0 else hidden_dim, hidden_dim))
+            layers.append(Sine(w0) if i < 2 else nn.ReLU(inplace=True))
 
         layers.append(nn.Linear(hidden_dim, output_dim))
 

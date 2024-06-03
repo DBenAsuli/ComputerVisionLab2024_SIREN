@@ -26,9 +26,9 @@ if __name__ == "__main__":
     print("")
 
     print("Reconstructing Images via SIREN_SHALLOW:")
- #   test_reconstruct_folder("SIREN_SHALLOW", folder_path, num_of_epochs=num_of_epochs)
+    test_reconstruct_folder("SIREN_SHALLOW", folder_path, num_of_epochs=num_of_epochs)
     print("")
 
     print("Comparing Reconstructions of SIREN_SHALLOW:")
- #   test_compare_folder(folder_path, './Results/SIREN_SHALLOW/')
+    test_compare_folder(folder_path, './Results/SIREN_SHALLOW/')
     print("")
