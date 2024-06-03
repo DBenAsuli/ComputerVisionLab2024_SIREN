@@ -71,10 +71,7 @@ class SIREN_HYBRID(SIREN):
         layers = []
         for i in range(num_layers):
             layers.append(nn.Linear(input_dim if i == 0 else hidden_dim, hidden_dim))
-            if i % 2 == 0:
-                layers.append(Sine(w0))
-            else:
-                layers.append(nn.ReLU(inplace=True))
+            layers.append(Sine(w0) if i % 2 == 0 else nn.ReLU(inplace=True))
 
         layers.append(nn.Linear(hidden_dim, output_dim))
 
