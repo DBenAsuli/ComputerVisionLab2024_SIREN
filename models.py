@@ -50,11 +50,9 @@ class SIREN(nn.Module):
 
     def init_weights(self):
         with torch.no_grad():
-            # Initialize the first layer differently
             nn.init.uniform_(self.net[0].weight, -1 / self.net[0].in_features, 1 / self.net[0].in_features)
             nn.init.zeros_(self.net[0].bias)
 
-            # Initialize the hidden layers
             for layer in self.net:
                 if isinstance(layer, nn.Linear):
                     nn.init.uniform_(layer.weight, -np.sqrt(6 / layer.in_features) / self.w0, np.sqrt(6 / layer.in_features) / self.w0)
@@ -73,7 +71,7 @@ class SIREN_HYBRID(SIREN):
         layers = []
         for i in range(num_layers):
             layers.append(nn.Linear(input_dim if i == 0 else hidden_dim, hidden_dim))
-            if i % 2:
+            if i % 2 == 0:
                 layers.append(Sine(w0))
             else:
                 layers.append(nn.ReLU(inplace=True))
