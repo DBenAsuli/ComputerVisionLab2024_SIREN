@@ -15,6 +15,7 @@ from PIL import Image
 import torch.optim as optim
 from torch.optim import Adam
 import matplotlib.pyplot as plt
+from skimage.transform import rescale
 from skimage.metrics import structural_similarity as ssim
 
 # Set device
@@ -24,10 +25,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 # Load the image
 def load_image(image_path):
     image = plt.imread(image_path) / 255.
-    scale = 120 / max(image.shape[:-1])
-    scale = 0.05
-    #    image = rescale(image, scale, channel_axis=-1)
-
     return image
 
 
@@ -51,6 +48,13 @@ def create_coordinate_grid(im):
 
     return x, y, im_mean, im_std
 
+
+# Generate a grid of coordinates for SIREN reconstruction
+def generate_grid_siren(resolution=256):
+    lin = np.linspace(-1, 1, resolution)
+    x, y = np.meshgrid(lin, lin)
+    xy = np.stack([x, y], axis=-1)
+    return xy.reshape(-1, 2), x.shape
 
 # Training function for both networks
 def train(image, model, epochs=1000, lr=1e-3, img_name="", model_name=""):
@@ -78,7 +82,7 @@ def train(image, model, epochs=1000, lr=1e-3, img_name="", model_name=""):
 
 
 # Inferring function for both networks
-def infer(model, image):
+def infer_MLP(model, image):
     x, y, im_mean, im_std = create_coordinate_grid(image)
 
     with torch.no_grad():
@@ -86,6 +90,15 @@ def infer(model, image):
 
     return output
 
+def infer_SIREN(model):
+    coords, shape = generate_grid_siren()
+    coords_tensor = torch.tensor(coords, dtype=torch.float32)
+
+    # Forward pass
+    output = model(coords_tensor).detach().numpy()
+    output = output.reshape(*shape, 3)
+
+    return output
 
 def resize_image(image, target_size):
     return cv2.resize(image, target_size, interpolation=cv2.INTER_AREA)
@@ -122,7 +135,13 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
 
     if model_name.upper() == "MLP":
         model = MLP().to(device)
-        model_chosen = 1
+        print("")
+        print("Working on: \"" + image_name + "\" image")
+        model = train(image, model, epochs=num_of_epochs, lr=1e-3, img_name=image_name, model_name=model_name.upper())
+        reconstructed_image = infer_MLP(model, image)
+        reconstructed_image_path = "".join(('./Results/', model_name, '/', image_name, '.png'))
+        save_image(reconstructed_image, reconstructed_image_path)
+
     elif model_name.upper() == "SIREN":
         model = SIREN().to(device)
         model_chosen = 1
@@ -130,10 +149,17 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
         model = SIREN_HYBRID().to(device)
         model_chosen = 1
     elif model_name.upper() == "SIREN_NARROW":
-        model = SIREN(hidden_dim=64).to(device)
-        model_chosen = 1
+        model = SIREN(hidden_dim=128).to(device)
+        print("")
+        print("Working on: \"" + image_name + "\" image")
+        model = train(image, model, epochs=num_of_epochs, lr=1e-3, img_name=image_name, model_name=model_name.upper())
+        reconstructed_image = infer_SIREN(model, image)
+
+        reconstructed_image_path = "".join(('./Results/', model_name, '/', image_name, '.png'))
+        save_image(reconstructed_image, reconstructed_image_path)
+
     elif model_name.upper() == "SIREN_WIDER":
-        model = SIREN(hidden_dim=528).to(device)
+        model = SIREN(hidden_dim=1024).to(device)
         model_chosen = 1
     elif model_name.upper() == "SIREN_DEEPER":
         model = SIREN(num_layers=20).to(device)
@@ -143,7 +169,12 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
         model_chosen = 1
     elif model_name.upper() == "MLP_SINE":
         model = MLP_SINE().to(device)
-        model_chosen = 1
+        print("")
+        print("Working on: \"" + image_name + "\" image")
+        model = train(image, model, epochs=num_of_epochs, lr=1e-3, img_name=image_name, model_name=model_name.upper())
+        reconstructed_image = infer_MLP(model, image)
+        reconstructed_image_path = "".join(('./Results/', model_name, '/', image_name, '.png'))
+        save_image(reconstructed_image, reconstructed_image_path)
     else:
         model_chosen = 0
         print("Invalid model name")
@@ -153,7 +184,7 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
         print("")
         print("Working on: \"" + image_name + "\" image")
         model = train(image, model, epochs=num_of_epochs, lr=1e-3, img_name=image_name, model_name=model_name.upper())
-        reconstructed_image = infer(model, image)
+        reconstructed_image = infer_MLP(model, image)
         reconstructed_image_path = "".join(('./Results/', model_name, '/', image_name, '.png'))
         save_image(reconstructed_image, reconstructed_image_path)
 

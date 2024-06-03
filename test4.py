@@ -18,11 +18,11 @@ if __name__ == "__main__":
     num_of_epochs = 1000
 
     print("Reconstructing Images via SIREN_DEEPER:")
-    test_reconstruct_folder("SIREN_DEEPER", folder_path, num_of_epochs=num_of_epochs)
+ #   test_reconstruct_folder("SIREN_DEEPER", folder_path, num_of_epochs=num_of_epochs)
     print("")
 
     print("Comparing Reconstructions of SIREN_DEEPER:")
-    test_compare_folder(folder_path, './Results/SIREN_DEEPER/')
+ #   test_compare_folder(folder_path, './Results/SIREN_DEEPER/')
     print("")
 
     print("Reconstructing Images via SIREN_SHALLOW:")

@@ -18,17 +18,17 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore", category=UserWarning, message="A NumPy version.*")
 
     print("Reconstructing Images via MLP:")
-    test_reconstruct_folder("MLP", folder_path, num_of_epochs=num_of_epochs)
+    #test_reconstruct_folder("MLP", folder_path, num_of_epochs=num_of_epochs)
     print("")
 
     print("Reconstructing Images via SIREN:")
-    #   test_reconstruct_folder("SIREN", folder_path, num_of_epochs=num_of_epochs)
+    test_reconstruct_folder("SIREN", folder_path, num_of_epochs=num_of_epochs)
     print("")
 
     print("Comparing Reconstructions of MLP:")
-    #   test_compare_folder('./Images/', './Results/MLP/')
+    # test_compare_folder('./Images/', './Results/MLP/')
     print("")
 
     print("Comparing Reconstructions of SIREN:")
-    #   test_compare_folder('./Images/', './Results/SIREN/')
+    test_compare_folder('./Images/', './Results/SIREN/')
     print("")
