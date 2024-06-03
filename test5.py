@@ -15,12 +15,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == "__main__":
     folder_path = './Images/'
-    num_of_epochs = 1000
+    num_of_epochs = 2000
 
-    print("Reconstructing Images via SIREN_HYBRID")
-    test_reconstruct_folder("SIREN_HYBRID", folder_path, num_of_epochs=num_of_epochs)
+    print("Reconstructing Images via SIREN with double epochs number:")
+    test_reconstruct_folder("SIREN", folder_path, num_of_epochs=num_of_epochs)
     print("")
 
-    print("Comparing Reconstructions of SIREN_HYBRID:")
-    test_compare_folder(folder_path, './Results/SIREN_HYBRID/')
+    print("Comparing Reconstructions of SIREN with double epochs number:")
+    test_compare_folder('./Images/', './Results/SIREN_Double/')
     print("")

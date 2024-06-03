@@ -124,9 +124,28 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
         model = MLP().to(device)
         model_chosen = 1
     elif model_name.upper() == "SIREN":
-        model = SIREN(input_dim=2, output_dim=3)
+        model = SIREN().to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_HYBRID":
+        model = SIREN_HYBRID().to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_NARROW":
+        model = SIREN(hidden_dim=64).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_WIDER":
+        model = SIREN(hidden_dim=528).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_DEEPER":
+        model = SIREN(num_layers=20).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_SHALLOW":
+        model = SIREN(num_layers=5).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "MLP_SINE":
+        model = MLP_SINE().to(device)
         model_chosen = 1
     else:
+        model_chosen = 0
         print("Invalid model name")
         pass
 
@@ -170,7 +189,7 @@ def iterate_compare_folder(folder_path1='./Images/', folder_path2="."):
 
 def plot_train_graph(train_loss, img_name="", model_name=""):
     plt.plot(train_loss, label="Train Loss")
-    plt.title(f'Train and Validation Loss of {img_name} with {model_name} Model')
+    plt.title(f'Train Loss of {img_name} Image with the {model_name} Model')
     plt.xlabel("Epoch Number")
     plt.ylabel("Loss")
     plt.legend(loc="upper right")
