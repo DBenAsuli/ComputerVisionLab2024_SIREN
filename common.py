@@ -158,6 +158,9 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
     elif model_name.upper() == "MLP_SINE2":
         model = MLP_SINE2().to(device)
         model_chosen = 1
+    elif model_name.upper() == "MLP_SINE3":
+        model = MLP_SINE3().to(device)
+        model_chosen = 1
     else:
         model_chosen = 0
         print("Invalid model name")

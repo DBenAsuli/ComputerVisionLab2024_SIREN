@@ -96,7 +96,7 @@ class MLP_SINE(MLP):
         self.net = nn.Sequential(*layers)
 
 
-# Neural network for MLP implicit representation with one Sine Layer
+# Neural network for MLP implicit representation with two Sine Layer
 class MLP_SINE2(MLP):
     def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=5, w0=30):
         super(MLP_SINE2, self).__init__()
@@ -106,6 +106,25 @@ class MLP_SINE2(MLP):
             layers.append(nn.Linear(input_dim if i == 0 else hidden_dim, hidden_dim))
             layers.append(Sine(w0) if i < 2 else nn.ReLU(inplace=True))
 
+        layers.append(nn.Linear(hidden_dim, output_dim))
+
+        self.net = nn.Sequential(*layers)
+
+class MLP_SINE3(MLP):
+    def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=5, w0=30):
+        super(MLP_SINE3, self).__init__()
+        layers = []
+
+        layers.append(nn.Linear(input_dim, hidden_dim))
+        layers.append(Sine(w0))
+        layers.append(nn.Linear(hidden_dim, hidden_dim))
+        layers.append(Sine(w0))
+        layers.append(nn.Linear(hidden_dim, hidden_dim))
+        layers.append(nn.ReLU(inplace=True))
+        layers.append(nn.Linear(hidden_dim, hidden_dim*2))
+        layers.append(nn.ReLU(inplace=True))
+        layers.append(nn.Linear(hidden_dim*2, hidden_dim))
+        layers.append(nn.ReLU(inplace=True))
         layers.append(nn.Linear(hidden_dim, output_dim))
 
         self.net = nn.Sequential(*layers)
