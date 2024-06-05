@@ -10,7 +10,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 if __name__ == "__main__":
     folder_path = './Images/'
-    num_of_epochs = 1
+    num_of_epochs = 1000
 
     # For Memory Optimization and Warnings
     gc.collect()
