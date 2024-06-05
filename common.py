@@ -30,8 +30,14 @@ def load_image(image_path):
 
 # Save the image
 def save_image(image, path):
+    image_directory = path.split("/")[-1]
     image = (image * 255).astype(np.uint8)
     image = Image.fromarray(image)
+
+    # FIXME DVIR CHECK IF WORKS
+ #   if not os.path.exists(image_directory):
+ #       os.makedirs(image_directory)
+
     image.save(path)
 
 
@@ -176,6 +182,9 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
 
 
 def iterate_reconstruct_folder(folder_path, model_type, num_of_epochs):
+    # FIXME DVIR CHECK IF WORKS
+    #   if not os.path.exists(folder_path):
+    #       os.makedirs(folder_path)
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         file_suffix = file_path.split(".")[-1]
@@ -185,9 +194,15 @@ def iterate_reconstruct_folder(folder_path, model_type, num_of_epochs):
 
 
 def iterate_compare_folder(folder_path1='./Images/', folder_path2="."):
+    # FIXME DVIR CHECK IF WORKS
+    #   if not os.path.exists(folder_path1):
+    #       os.makedirs(folder_path1)
     for filename1 in os.listdir(folder_path1):
         file_suffix = filename1.split(".")[-1]
         if file_suffix.upper() == "JPG":
+            # FIXME DVIR CHECK IF WORKS
+            #   if not os.path.exists(folder_path2):
+            #       os.makedirs(folder_path2)
             for filename2 in os.listdir(folder_path2):
                 file_suffix = filename2.split(".")[-1]
                 if file_suffix.upper() == "PNG":

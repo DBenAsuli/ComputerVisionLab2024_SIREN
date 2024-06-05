@@ -28,9 +28,35 @@ if __name__ == "__main__":
     elif model_name.upper() == "SIREN":
         model = SIREN().to(device)
         model_chosen = 1
+    elif model_name.upper() == "SIREN_HYBRID":
+        model = SIREN_HYBRID().to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_NARROW":
+        model = SIREN(hidden_dim=128).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_WIDER":
+        model = SIREN(hidden_dim=526).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_DEEPER":
+        model = SIREN(num_layers=8).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "SIREN_SHALLOW":
+        model = SIREN(num_layers=3).to(device)
+        model_chosen = 1
+    elif model_name.upper() == "MLP_SINE":
+        model = MLP_SINE().to(device)
+        model_chosen = 1
+    elif model_name.upper() == "MLP_SINE2":
+        model = MLP_SINE2().to(device)
+        model_chosen = 1
+    elif model_name.upper() == "MLP_SINE3":
+        model = MLP_SINE3().to(device)
+        model_chosen = 1
     else:
+        model_chosen = 0
         print("Invalid model name")
         pass
+
 
     if model_chosen:
         model = train(image, model, epochs=1000, lr=1e-3)
