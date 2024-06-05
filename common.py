@@ -30,13 +30,8 @@ def load_image(image_path):
 
 # Save the image
 def save_image(image, path):
-    image_directory = path.split("/")[-1]
     image = (image * 255).astype(np.uint8)
     image = Image.fromarray(image)
-
-    # FIXME DVIR CHECK IF WORKS
- #   if not os.path.exists(image_directory):
- #       os.makedirs(image_directory)
 
     image.save(path)
 
@@ -177,14 +172,19 @@ def reconstruct_img(file_path, model_name, num_of_epochs):
         print("Working on: \"" + image_name + "\" image")
         model = train(image, model, epochs=num_of_epochs, lr=1e-3, img_name=image_name, model_name=model_name.upper())
         reconstructed_image = infer(model, image)
-        reconstructed_image_path = "".join(('./Results/', model_name, '/', image_name, '.png'))
+        reconstructed_image_dir = "".join(('./Results/', model_name, '/'))
+        reconstructed_image_path = "".join((reconstructed_image_dir, image_name, '.png'))
+        if not os.path.exists(reconstructed_image_dir):
+            os.makedirs(reconstructed_image_dir)
+
         save_image(reconstructed_image, reconstructed_image_path)
 
 
 def iterate_reconstruct_folder(folder_path, model_type, num_of_epochs):
-    # FIXME DVIR CHECK IF WORKS
-    #   if not os.path.exists(folder_path):
-    #       os.makedirs(folder_path)
+    if not os.path.exists('./Results/'):
+        os.makedirs('./Results/')
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
         file_suffix = file_path.split(".")[-1]
@@ -194,15 +194,15 @@ def iterate_reconstruct_folder(folder_path, model_type, num_of_epochs):
 
 
 def iterate_compare_folder(folder_path1='./Images/', folder_path2="."):
-    # FIXME DVIR CHECK IF WORKS
-    #   if not os.path.exists(folder_path1):
-    #       os.makedirs(folder_path1)
+    if not os.path.exists('./Results/'):
+        os.makedirs('./Results/')
+    if not os.path.exists(folder_path1):
+        os.makedirs(folder_path1)
     for filename1 in os.listdir(folder_path1):
         file_suffix = filename1.split(".")[-1]
         if file_suffix.upper() == "JPG":
-            # FIXME DVIR CHECK IF WORKS
-            #   if not os.path.exists(folder_path2):
-            #       os.makedirs(folder_path2)
+            if not os.path.exists(folder_path2):
+                os.makedirs(folder_path2)
             for filename2 in os.listdir(folder_path2):
                 file_suffix = filename2.split(".")[-1]
                 if file_suffix.upper() == "PNG":
@@ -224,7 +224,10 @@ def plot_train_graph(train_loss, img_name="", model_name=""):
     plt.xlabel("Epoch Number")
     plt.ylabel("Loss")
     plt.legend(loc="upper right")
-    graph_image_path = "".join(('./Results/', model_name, '/Graphs/', f'Train_Loss_{img_name}_{model_name}.png'))
+    graph_image_dir = "".join(('./Results/', model_name, '/Graphs/'))
+    graph_image_path = "".join((graph_image_dir,'Train_Loss_',img_name,'_',model_name,'.png'))
+    if not os.path.exists(graph_image_dir):
+        os.makedirs(graph_image_dir)
     plt.savefig(graph_image_path)
     plt.clf()
 
