@@ -225,7 +225,7 @@ def plot_train_graph(train_loss, img_name="", model_name=""):
     plt.ylabel("Loss")
     plt.legend(loc="upper right")
     graph_image_dir = "".join(('./Results/', model_name, '/Graphs/'))
-    graph_image_path = "".join((graph_image_dir,'Train_Loss_',img_name,'_',model_name,'.png'))
+    graph_image_path = "".join((graph_image_dir, 'Train_Loss_', img_name, '_', model_name, '.png'))
     if not os.path.exists(graph_image_dir):
         os.makedirs(graph_image_dir)
     plt.savefig(graph_image_path)

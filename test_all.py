@@ -57,7 +57,6 @@ if __name__ == "__main__":
     test_compare_folder(folder_path, './Results/SIREN_NARROW/')
     print("")
 
-
     print("Reconstructing Images via SIREN_DEEPER:")
     test_reconstruct_folder("SIREN_DEEPER", folder_path, num_of_epochs=num_of_epochs)
     print("")

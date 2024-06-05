@@ -57,7 +57,6 @@ if __name__ == "__main__":
         print("Invalid model name")
         pass
 
-
     if model_chosen:
         model = train(image, model, epochs=1000, lr=1e-3)
 

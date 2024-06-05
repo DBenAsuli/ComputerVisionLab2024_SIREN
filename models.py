@@ -110,6 +110,7 @@ class MLP_SINE2(MLP):
 
         self.net = nn.Sequential(*layers)
 
+
 class MLP_SINE3(MLP):
     def __init__(self, input_dim=2, hidden_dim=256, output_dim=3, num_layers=5, w0=30):
         super(MLP_SINE3, self).__init__()
@@ -121,9 +122,9 @@ class MLP_SINE3(MLP):
         layers.append(Sine(w0))
         layers.append(nn.Linear(hidden_dim, hidden_dim))
         layers.append(nn.ReLU(inplace=True))
-        layers.append(nn.Linear(hidden_dim, hidden_dim*2))
+        layers.append(nn.Linear(hidden_dim, hidden_dim * 2))
         layers.append(nn.ReLU(inplace=True))
-        layers.append(nn.Linear(hidden_dim*2, hidden_dim))
+        layers.append(nn.Linear(hidden_dim * 2, hidden_dim))
         layers.append(nn.ReLU(inplace=True))
         layers.append(nn.Linear(hidden_dim, output_dim))
 
