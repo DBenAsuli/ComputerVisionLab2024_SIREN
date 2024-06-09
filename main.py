@@ -12,12 +12,19 @@ from common import *
 gc.collect()
 
 # Set device
-device = torch.device('cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Main
 if __name__ == "__main__":
-    model_name = input("Please enter the preferred model name (MLP/SIREN): ")
-    image_name = input("Please enter the (JPG) image name inside Images directory: ")
+    # For Memory Optimization and Warnings
+    gc.collect()
+    warnings.filterwarnings("ignore")
+    warnings.filterwarnings("ignore", category=UserWarning, message="A NumPy version.*")
+
+    print("")
+    print("* Please refer to the README.txt file in order to see instructions *")
+    model_name = input("Enter the model name: ")
+    image_name = input("Enter the image name inside \"Images\" directory: ")
     image_path = './Images/' + image_name + '.JPG'
     image = load_image(image_path)
     H, W, C = image.shape
@@ -58,11 +65,10 @@ if __name__ == "__main__":
         pass
 
     if model_chosen:
-        model = train(image, model, epochs=1000, lr=1e-3)
-
+        print("")
+        print("Working on: \"" + image_name + "\" image")
+        model = train(image, model, epochs=1000, lr=1e-3, img_name=image_name, model_name=model_name.upper())
         reconstructed_image = infer(model, image)
-        reconstructed_image_path = "".join(('./Results/', image_name, '_Reconstructed_', model_name.upper(), '.png'))
-        save_image(reconstructed_image, reconstructed_image_path)
 
         plt.subplot(121)
         plt.imshow(image)
